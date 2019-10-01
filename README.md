@@ -16,17 +16,17 @@ The purpose of this project is to expose more people to wildlife/animals and pro
 # Necessary Items: 
 Total Cost: $100,000,000,00000,00000000,000000000,00000000000.99
 These specific items were used and different configurations/versions are possible
-	RPi 4 (could run on any RPi)
-		$20-80 
-		You will need SD Card and Power cord of course
-	Arduino Mega 2560 (could run on any Arduino)
-		$20-50
-		Also Power Cord. I am using 800milliamp 12V unit.
-	Motor Controller Dual H Bridge L298N
-	Motor (12Volt DC Motor 120RPM)
-	2 DiGi Xbee 1mW Wire Antenna Series 1
-		$60
-		I think other RF communication would work too
+	- RPi 4 (could run on any RPi)
+		- $20-80 
+		- You will need SD Card and Power cord of course
+	- Arduino Mega 2560 (could run on any Arduino)
+		- $20-50
+		- Also Power Cord. I am using 800milliamp 12V unit.
+	- Motor Controller Dual H Bridge L298N
+	- Motor (12Volt DC Motor 120RPM)
+	- 2 DiGi Xbee 1mW Wire Antenna Series 1
+		- $60
+		- I think other RF communication would work too
 	Solu Xbee USB to Serial Port Xbee Adapter Module
 		$5
 	Some Jumper Wires (Get a variety pack of male-male, male-female etc...)
