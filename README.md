@@ -111,7 +111,7 @@ Just write some print statements!
 
 
 # Live Stream:
-The camera I have chosen (redacted, banned from US distribution) is capable of RTMP (I’m guessing RealTimeMessageProtocol) transmission which allows the camera itself to bypass the encoder (or act as one idk) and send the frames/audio it captures directly to an RTMP receiver (youtube livestream). Thanks to this technology, after launching your IP Camera configuration settings (by connecting via ip address to your network connected camera) you may specify an RTMP address and pre-shared key to connect the IP Cam to the Live Stream. I used this tutorial to understand how to do this with my specific camera: https://www.youtube.com/watch?v=caGFCowzN74
+The camera I have chosen (redacted, banned from US distribution) is capable of RTMP (RealTimeMessagingProtocol) transmission which allows the camera itself to bypass the encoder (or act as one idk) and send the frames/audio it captures directly to an RTMP receiver (youtube livestream). Thanks to this technology, after launching your IP Camera configuration settings (by connecting via ip address to your network connected camera) you may specify an RTMP address and pre-shared key to connect the IP Cam to the Live Stream. I used this tutorial to understand how to do this with my specific camera: https://www.youtube.com/watch?v=caGFCowzN74
 Some things to note are that Youtube digests H264 Video format and AAC Audio format. Also play around with bitrate settings until youtube stops complaining. Your ISP may throttle a high bitrate. I have 100 up and down, which is sustainable for 1080p60fps
 My camera video settings are as follows:
 	- Format: H264
