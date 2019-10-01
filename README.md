@@ -16,6 +16,7 @@ The purpose of this project is to expose more people to wildlife/animals and pro
 # Necessary Items: 
 Total Cost: $100,000,000,00000,00000000,000000000,00000000000.99
 These specific items were used and different configurations/versions are possible
+
 	- RPi 4 (could run on any RPi)
 		- $20-80 
 		- You will need SD Card and Power cord of course
