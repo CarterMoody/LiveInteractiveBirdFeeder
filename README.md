@@ -59,23 +59,26 @@ Wallets allow people to send money to a specific receive address which can be qu
 
 
 # Arduino Configuration:
-With wires attached to the TX/RX pins of the Arduino, it cannot communicate via USB (uploading code to the device will fail) unplug the wires and try reuploading. 
+- With wires attached to the TX/RX pins of the Arduino, it cannot communicate via USB. (uploading code to the device will fail) unplug the wires and try reuploading. 
 
 # RPi Configuration:
-Install Raspbian (I am using July 2019 Version)
-Establish WiFi connectivity for the RPi
-Install at least Python 3 to the RPi
-There are many tutorials online to do this. After following one, ensure the latest version of Python is installed and used by default by running version command: python -v 
-The RPi must have SSH enabled in preferences
-The RPi must have Serial Communication enabled in preferences
+- Install Raspbian (I am using July 2019 Version)
+- Establish WiFi connectivity for the RPi
+- Install at least Python 3 to the RPi
+	- There are many tutorials online to do this.
+	- After following one, ensure the latest version of Python is installed and used by default by running version command: python -v 
+- The RPi must have SSH enabled in preferences
+- The RPi must have Serial Communication enabled in preferences
 
 
 
 
 # XBEE Configuration:
-With the XBEE’s I could only find limited information detailing how to communicate between an Arduino and Raspberry Pi. A couple things to remember are that you must enable serial communication on the RPi and make sure that the Arduino does not have anything plugged into the tx/rx pins when uploading a sketch. Furthermore, in the links provided below, the tx/rx pins are flipped for RPi. Just remember that if you’re receiving communication use the RX pin, and transmitting something should go out on the TX line. I found these tutorials extremely helpful.
-Circuit Digest XBEE Raspberry Pi: https://circuitdigest.com/microcontroller-projects/raspberry-pi-xbee-module-interfacing
-Circuit Digest XBEE Arduino: https://circuitdigest.com/microcontroller-projects/arduino-xbee-module-interfacing-tutorial
+With the XBEE’s I could only find limited information detailing how to communicate between an Arduino and Raspberry Pi. A couple things to remember are that you must enable serial communication on the RPi and make sure that the Arduino does not have anything plugged into the tx/rx pins when uploading a sketch. Furthermore, in the links provided below, the tx/rx pins are flipped for RPi. Just remember that if you’re receiving communication use the RX pin, and transmitting something should go out on the TX line. 
+
+I found these tutorials extremely helpful.
+- Circuit Digest XBEE Raspberry Pi: https://circuitdigest.com/microcontroller-projects/raspberry-pi-xbee-module-interfacing
+- Circuit Digest XBEE Arduino: https://circuitdigest.com/microcontroller-projects/arduino-xbee-module-interfacing-tutorial
 These are essentially the same tutorial except each one connects a computer to either an arduino or a raspberry pi. I followed both of these to flash the receiver/sender info to the XBEE modules. There are specific places in the code I provide that send a signal over the serial output (RPi to XBEE send signal) and certain places (loop) in the Arduino code where I listen for a signal (XBEE to Arduino receive signal).
 
 
@@ -91,15 +94,15 @@ https://taskernet.com/shares/?user=AS35m8m280j%2FFPGkbE9OvPhH4%2B%2FKd%2FFUPCMie
 
 # ConnectBot:
 ConnectBot is used to SSH into the RPi and start the program FeedOnce.py which will send one signal outside to dispense food. There is a guide online which covers how to set this up.
-Install the free SSH client ConnectBot.
-Key-based authentication with ConnectBot is required. A good tutorial: http://michaelchelen.net/0f3e/android-connectbot-ssh-key-auth-howto/
-When you have set up the connection, long-press the connection in ConnectBot’s host list and select Edit host. Change the name to some nickname, e.g., myconnection.
-Configure the post-login automation. Enter the command or script you’d like to run followed by a semicolon, exit and enter, e.g.: /home/me/somescript.sh; exit ↩. This is to make sure ConnectBot just runs the command and returns.
-Now let’s use it in Tasker. Create a Task, select +, System, Send Intent. Configure the action as follows:
-Action: android.intent.action.VIEW
-Cat: None
-Data: ssh://user@host:port#myconnection
-Target: Activity
+1. Install the free SSH client ConnectBot.
+2. Key-based authentication with ConnectBot is required. A good tutorial: http://michaelchelen.net/0f3e/android-connectbot-ssh-key-auth-howto/
+3. When you have set up the connection, long-press the connection in ConnectBot’s host list and select Edit host. Change the name to some nickname, e.g., myconnection.
+4. Configure the post-login automation. Enter the command or script you’d like to run followed by a semicolon, exit and enter, e.g.: /home/me/somescript.sh; exit ↩. This is to make sure ConnectBot just runs the command and returns.
+5. Now let’s use it in Tasker. Create a Task, select +, System, Send Intent. Configure the action as follows:
+	- Action: android.intent.action.VIEW
+	- Cat: None
+	- Data: ssh://user@host:port#myconnection
+	- Target: Activity
 When you run the Task, the remote command should execute. Note that for every different command you want to run on the host, you need to create a separate profile in ConnectBot, with different nicknames.
 
 
@@ -111,13 +114,13 @@ Just write some print statements!
 The camera I have chosen (redacted, banned from US distribution) is capable of RTMP (I’m guessing RealTimeMessageProtocol) transmission which allows the camera itself to bypass the encoder (or act as one idk) and send the frames/audio it captures directly to an RTMP receiver (youtube livestream). Thanks to this technology, after launching your IP Camera configuration settings (by connecting via ip address to your network connected camera) you may specify an RTMP address and pre-shared key to connect the IP Cam to the Live Stream. I used this tutorial to understand how to do this with my specific camera: https://www.youtube.com/watch?v=caGFCowzN74
 Some things to note are that Youtube digests H264 Video format and AAC Audio format. Also play around with bitrate settings until youtube stops complaining. Your ISP may throttle a high bitrate. I have 100 up and down, which is sustainable for 1080p60fps
 My camera video settings are as follows:
-	Format: H264
-	FPS: 50
-	Keyframe: 100 (Should be double FPS)
-	Bitrate:
+	- Format: H264
+	- FPS: 50
+	- Keyframe: 100 (Should be double FPS)
+	- Bitrate:
 My camera audio settings are as follows:
-	Format: AAC
-	Sampling Frequency:
+	- Format: AAC
+	- Sampling Frequency:
 
 
 # Bibliography:
