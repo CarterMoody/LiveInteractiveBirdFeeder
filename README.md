@@ -28,26 +28,26 @@ These specific items were used and different configurations/versions are possibl
 	- 2 DiGi Xbee 1mW Wire Antenna Series 1
 		- $60
 		- I think other RF communication would work too
-	Solu Xbee USB to Serial Port Xbee Adapter Module
-		$5
-	Some Jumper Wires (Get a variety pack of male-male, male-female etc...)
-		$0-5
-	IPC-HDW5231R-ZE IP Camera
-		$50-200
-		Any IP Camera works, this brand supports RTMP for easy live streaming
-	TL-PoE150S PoE Injector (Power camera with the ethernet cord)
-		$20
-		Any PoE injector should work (Check your Camera power specs)
-	Wood
-		As much or as little as necessary for you to build a platform and enclosure for the fragile feeder/arduino components
-	Nails/Screws
-	Hammer/Screwdriver
-	Handheld Crank Spreader
-		This was the solution I chose for the feed dispenser. I found it at a thrift store. 
-		There are probably better alternatives but this hopper/dispenser works for now
-	Plastic Container
-		This was to ‘weatherproof’ the electrical components within the wood box. 
-		So far it has been pretty humid and moist in the mornings but everything is still functioning (for now)
+	- Solu Xbee USB to Serial Port Xbee Adapter Module
+		- $5
+	- Some Jumper Wires (Get a variety pack of male-male, male-female etc...)
+		- $0-5
+	- IPC-HDW5231R-ZE IP Camera
+		- $50-200
+		- Any IP Camera works, this brand supports RTMP for easy live streaming
+	- TL-PoE150S PoE Injector (Power camera with the ethernet cord)
+		- $20
+		- Any PoE injector should work (Check your Camera power specs)
+	- Wood
+		- As much or as little as necessary for you to build a platform and enclosure for the fragile feeder/arduino components
+	- Nails/Screws
+	- Hammer/Screwdriver
+	- Handheld Crank Spreader
+		- This was the solution I chose for the feed dispenser. I found it at a thrift store. 
+		- There are probably better alternatives but this hopper/dispenser works for now
+	- Plastic Container
+		- This was to ‘weatherproof’ the electrical components within the wood box. 
+		- So far it has been pretty humid and moist in the mornings but everything is still functioning (for now)
 
 
 
