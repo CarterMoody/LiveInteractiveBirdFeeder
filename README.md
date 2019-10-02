@@ -129,6 +129,14 @@ My camera audio settings are as follows:
 These people inspired me: tanglesheep IOTA (Live Interactive Sheep Feeding) and Mr. Dove (Live Interactive Bird Feeding) on youtube. These projects I have reverse engineered and intend to provide step by step instructions for anyone else to do the same. Furthermore, all the links I used for research will be provided throughout the guide and included in the bibliography at the end of this document.
 
 # Bibliography:
-Linking WebCam to Youtube Livestream RTMP tutorial: https://www.youtube.com/watch?v=caGFCowzN74
+
+- Linking WebCam to Youtube Livestream RTMP tutorial: https://www.youtube.com/watch?v=caGFCowzN74
+- Circuit Digest XBEE Raspberry Pi: https://circuitdigest.com/microcontroller-projects/raspberry-pi-xbee-module-interfacing
+- Circuit Digest XBEE Arduino: https://circuitdigest.com/microcontroller-projects/arduino-xbee-module-interfacing-tutorial
+- Tasker Export: https://taskernet.com/shares/?user=AS35m8m280j%2FFPGkbE9OvPhH4%2B%2FKd%2FFUPCMieeBd%2Batj8tVemNusHuhvDvo0rwACAjrS40KR&id=Task%3ATest
+- ConnectBot Key Based Authentication: http://michaelchelen.net/0f3e/android-connectbot-ssh-key-auth-howto/
+- RTMP YouTube LiveStream Guide for Dahua (Empire Tech) Cameras: https://www.youtube.com/watch?v=caGFCowzN74
+
+
 
 
