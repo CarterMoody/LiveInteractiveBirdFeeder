@@ -3,12 +3,10 @@
 # Finished Product: https://www.youtube.com/channel/UCErXmjslZq1scwuezZL9UCQ
 Link to my youtube channel. Click on the LiveStream to view the finished product.
 
-I generally hate using ‘you’ especially in formal documentation. This is not that so I have left it in. Enjoy the personal guide I have made specifically for YOU the reader.
 
+# Preface 
 This guide includes detailed instructions to create your own automatic bird feeder. The bird feeder feeds on a schedule and also when you send a signal to it (or send money).
 
-# Giving credit where credit is due. 
-This was not my idea. It may not have even been these people’s ideas. There are probably these all over the world already. Who knows. All I know is that it has been done before and these people inspired me: tanglesheep IOTA (Live Interactive Sheep Feeding) and Mr. Dove (Live Interactive Bird Feeding) on youtube. These projects I have reverse engineered and intend to provide step by step instructions for anyone else to do the same. Furthermore, all the links I used for research will be provided throughout the guide and included in the bibliography at the end of this document.
 
 # Purpose: 
 The purpose of this project is to expose more people to wildlife/animals and provide food for them. The more people that create something like this, the more people become aware of the natural beauty around us. All made possible by RPi, Arduino, and of course the Blockchain.
@@ -122,6 +120,9 @@ My camera audio settings are as follows:
 	- Format: AAC
 	- Sampling Frequency:
 
+
+# Giving credit where credit is due. 
+These people inspired me: tanglesheep IOTA (Live Interactive Sheep Feeding) and Mr. Dove (Live Interactive Bird Feeding) on youtube. These projects I have reverse engineered and intend to provide step by step instructions for anyone else to do the same. Furthermore, all the links I used for research will be provided throughout the guide and included in the bibliography at the end of this document.
 
 # Bibliography:
 Linking WebCam to Youtube Livestream RTMP tutorial: https://www.youtube.com/watch?v=caGFCowzN74
