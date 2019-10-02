@@ -1,4 +1,4 @@
-# LiveInteractiveBirdFeeder DIY Guide Walkthrough | September 27th 2019
+# LiveInteractiveBirdFeeder DIY Guide Walkthrough
 
 # Finished Product: https://www.youtube.com/channel/UCErXmjslZq1scwuezZL9UCQ
 Link to my youtube channel. Click on the LiveStream to view the finished product.
@@ -105,7 +105,7 @@ When you run the Task, the remote command should execute. Note that for every di
 
 
 # Testing:
-Just write some print statements!
+There are many print statements left in the code. Uncomment them to see results in the console. Otherwise there is logging enabled, check the log file for important notifications!
 
 
 # Live Stream:
