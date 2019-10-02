@@ -4,7 +4,7 @@
 Link to my youtube channel. Click on the LiveStream to view the finished product.
 
 
-# Preface 
+# Preface:
 This guide includes detailed instructions to create your own automatic bird feeder. The bird feeder feeds on a schedule and also when you send a signal to it (or send money).
 
 
@@ -125,7 +125,7 @@ My camera audio settings are as follows:
 	- Sampling Frequency: 64000
 
 
-# Giving credit where credit is due. 
+# Credit:
 These people inspired me: tanglesheep IOTA (Live Interactive Sheep Feeding) and Mr. Dove (Live Interactive Bird Feeding) on youtube. These projects I have reverse engineered and intend to provide step by step instructions for anyone else to do the same. Furthermore, all the links I used for research will be provided throughout the guide and included in the bibliography at the end of this document.
 
 # Bibliography:
