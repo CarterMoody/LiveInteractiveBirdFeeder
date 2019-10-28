@@ -81,9 +81,10 @@ These are essentially the same tutorial except each one connects a computer to e
 
 
 # Code:
-There are Four basic elements to the RPi (transmitter) code: A polling engine which queries the blockchain for wallet balance change; A timer which feeds regularly, Code to send a feed signal to the Arduino (receiver); and a separate program to only send feed signal once (to be triggered by Tasker or for testing purposes). The comments within the code are, I believe, sufficient to explain what is going on.
+There are Four basic elements to the RPi (transmitter) code: A polling engine which queries the blockchain for wallet balance change; A timer which feeds regularly, Code to send a feed signal to the Arduino (receiver); and a separate program to only send feed signal once (to be triggered by Tasker or for testing purposes). The comments within the code are, I believe, sufficient to explain what is going on. Remember to replace instances of "Your API Key Here" and "Enter Password" With your unique values!
 
 There are Two basic elements to the Arduino (receiver) code: A polling engine which queries the serial for input from the attached XBEE module; and the code necessary to send a signal to the motor to spin. Again, I believe the comments are sufficient to understand.
+
 
 # Tasker:
 Tasker is necessary to respond to Venmo receipts. It could, theoretically, be used to respond to all forms of payment so long as a notification is generated. It can even do the HTTP get requests if needed. Tasker is extremely powerful and can be tailored to suit any Android automation needs. There is an extremely friendly and responsive community on reddit called r/Tasker which is quick to provide help to anyone using the application. Anyways, here is the link to my finished task which monitors for a Venmo notification and checks to see if it contains payment of greater than $0.49 and afterwards launches ConnectBot which does the rest…
