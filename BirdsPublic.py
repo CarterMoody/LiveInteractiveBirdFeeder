@@ -1,68 +1,82 @@
 #Adding new API stuff to BirdFeeder!
-#BirdsPublic.py
+#Birds.py
 
 
 import requests
+from requests.adapters import HTTPAdapter           # For Transport Adapter
+from requests.exceptions import ConnectionError     # For Transport Adapter
 import json
 import time
+from datetime import datetime, timezone             # Current Time Items
 
-# Current Time Items
-from datetime import datetime, timezone
-native_dt = datetime.now()
+native_dt = datetime.now()                          # Reset Time to Local
 
-# XBEE Stuff Below
-import serial
-from serial import Serial
-import RPi.GPIO as GPIO
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-
+##### XBEE Stuff Below ################
+#import serial
+#from serial import Serial
+#import RPi.GPIO as GPIO
+#GPIO.setmode(GPIO.BCM)
+#GPIO.setwarnings(False)
 #Set Serial to your USB serial device (XBEE)
-ser = serial.Serial('/dev/ttyUSB0', 9600,timeout=.5)
-
-# END XBEE setup
-
-#GLOBAL OTHER VARIABLES
+#ser = serial.Serial('/dev/ttyUSB0', 9600,timeout=.5)
+##### END XBEE setup ##################
+#######################################
+##### GLOBAL OTHER VARIABLES ##########
 feedCost = .05              # IN USD    controls minimum donation required to dispense food
 lastNANOBalance = 0         # IN NANO   Tracks NANO wallet Balance from last cycle request
 lastBTCBalance = 0          # IN BTC    Tracks BTC wallet Balance from last cycle request
 lastNANOPrice = 0           # IN USD    Tracks NANO price from exchange... updated daily
 lastBTCPrice = 0            # IN USD    Tracks BTC price from exchange... updated daily
-
-#GLOBAL WALLET VARIABLES
+#######################################
+##### GLOBAL WALLET VARIABLES #########
 WalletAddress_NANO_Natrium = "nano_36wcd1s3ekway8s5ays1fj9ewgtxyyot1dkr8wo6f3k5mnqnigj8uc698zji"    #ANDROID NATRIUM ADDRESS
 WalletAddress_BTC_BlockChain = "172MQBZyt2UGfCPRwUpKCH4cmB4sRrhywy"                                 # Bitcoin BlockChain Address
 WalletAddress_BTC_Blockio = "3MPnLgazAEZVMH7jyHvuBtJ79UZmtzJRqW"                                    # Bitcoin Blockio Service Address
 WalletAddress_NANO_Snapyio = "xrb_3x9azks1d118ap7wmq1kpnuc7mb5i6axiaqd9k6uyd9i6sqcuipr5p5wdpx6"     #Snapy Service Address
-########################
-# Legacy API Addresses
+#######################################
+##### Legacy API Addresses ############
 API_URL = "http://charmantadvisory.com:5000/apiblock/%s/%s"                             
 BITCOIN_API_URL = 'https://api.coinmarketcap.com/v1/ticker/bitcoin/'        # These are still used to track current market value            
 NANO_API_URL = 'https://api.coinmarketcap.com/v1/ticker/raiblocks/'         # These are still used to track current market value 
-#########
-# New SNAPY API info items
-headersNANO = {'x-api-key': 'ENTER YOUR SNAPY.IO API KEY HERE'}    # API Key from Snapy.io
-SnapyWalletURL = "https://snapy.io/api/v1/wallets" # Use this to generate a Wallet
-                ##### Got Seed: '2bb7bb6a04354c22903f9c6bf6f11c0ed29b1b9a14fd52fda89d549532f07f5b'
-SnapyAddressURL = "https://snapy.io/api/v1/address" # Use this to generate addresses for that wallet
-SnapySendURL = "https://snapy.io/api/v1/send"       # Use this to send to an address
+#######################################
+##### API KEYS SUPER PRIVATE ##########
+APIKeySnapyIO = "ENTER YOUR SNAPY.IO API KEY HERE"                  # API Key from Snapy.io
+APIKeyBlockIO = "ENTER YOUR BLOCK.IO API KEY HERE"                  # API Key from Block.io
+#######################################
+##### New SNAPY API info items ########
+headersNANO = {'x-api-key': APIKeySnapyIO}    # API Key from Snapy.io
+SnapyWalletURL = "https://snapy.io/api/v1/wallets"   # Use this to generate a Wallet Got Seed: '2bb7bb6a04354c22903f9c6bf6f11c0ed29b1b9a14fd52fda89d549532f07f5b'
+SnapyAddressURL = "https://snapy.io/api/v1/address"  # Use this to generate addresses for that wallet
+SnapySendURL = "https://snapy.io/api/v1/send"        # Use this to send to an address
 SnapyBalanceURL = "http://snapy.io/api/v1/balance/"  # Use this to check balance of all wallets. Concatenate an exact address to return one balance
-# New Block.io API info items
-BlockBalanceURL = "" # Used in actual function "getBitcoinBalance" because it changes
-api_key_BTC = "ENTER YOUR BLOCK.IO API KEY HERE"                 # API Key from Block.io
-## GLOBAL DATE AND TIME VARIABLES ##
+#######################################
+##### New Block.io API info items #####
+BlockBalanceURL = ""                                 # Created in actual function "getBitcoinBalance" because complex string
+#######################################
+##### GLOBAL DATE AND TIME VARIABLES ##
 dateString = ""
 timeString = ""
-hourString = ""                
+hourString = ""
 minuteString = ""
 secondString = ""
-lastFeedHour = 0  # Sets to hourString if we have fed this hour. If Hour and lastFeedHour don't match, dispense food!
-lastPriceCheckHourNANO = 0 # Sets to hourString if we have queried the API for the latest Crypto Price
-lastPriceCheckHourBTC = 0
-#############################
+lastFeedHour = 0                # Sets to hourString if we have fed this hour. If Hour and lastFeedHour don't match, dispense food!
+lastPriceCheckHourNANO = 0      # Sets to hourString if we have queried the API for the latest Crypto Price
+lastPriceCheckHourBTC = 0       # tracks last time queried API for latest BTC Price, same as above for NANO
+#######################################
+##### Session Requests ################
+sessionConnectionSnapyIO = requests.session()            # Used by requests to keep the session rather than a new one every request
+sessionConnectionBlockIO = requests.session()            # Used by requests for BlockIO API
+sessionConnectionCharmant = requests.session()           # Used by requests for Charmant and current Market Prices
+transportAdapterSnapyIO = HTTPAdapter(max_retries=10)    
+transportAdapterBlockIO = HTTPAdapter(max_retries=10)    # Setup Max Retries for Session Object
+transportAdapterCharmant = HTTPAdapter(max_retries=10)
+sessionConnectionSnapyIO.mount(SnapyBalanceURL, transportAdapterSnapyIO)
+sessionConnectionBlockIO.mount('https://block.io/', transportAdapterBlockIO)    # Use Transport Adapter for all endpoints that start with this URL
+sessionConnectionCharmant.mount('https://api.coinmarketcap.com', transportAdapterCharmant)
+#######################################
+#######################################
+#######################################
 
-#Session Requests
-sessionConnection = requests.session()      # Used by requests to keep the session rather than a new one every request
 
 # Gets time for the PST timezone    
 def updateDateTime():
@@ -90,8 +104,11 @@ def getNanoBalance():
     #r = requests.get(query_url)
     jsonParameter = {'detailed':'true'}
     #r = sessionConnection.get(query_url, headers = headers, json = jsonParameter)
-    r = sessionConnection.get(query_url, headers = headersNANO)
-    # Check that Request was Successfull, if not print HTTPCode
+    try:
+        r = sessionConnectionSnapyIO.get(query_url, headers = headersNANO, timeout = 5)
+    except ConnectionError as ce:
+        print(ce)
+    # Check that Request was Successful, if not print HTTPCode
     if r.status_code != 200:
         print("Error:", r.status_code)
         
@@ -104,13 +121,17 @@ def getNanoBalance():
     return balanceAdjusted
     
 # Specific Function Queries Block.io for the balance of the address in global variable
-def getBitcoinBalance():    
+def getBitcoinBalance():
     # Use the below URL to querey for any specific address EVEN EXTERNAL from blockio service (not created by Blockio)
-    query_url = "https://block.io/api/v2/get_address_balance/?api_key=" + api_key_BTC + "&addresses=" + WalletAddress_BTC_BlockChain
+    query_url = "https://block.io/api/v2/get_address_balance/?api_key=" + APIKeyBlockIO + "&addresses=" + WalletAddress_BTC_BlockChain
       
-    r = requests.get(query_url)
+    #r = requests.get(query_url)
+    try:
+        r = sessionConnectionBlockIO.get(query_url, timeout = 5)
+    except ConnectionError as ce:
+        print(ce)
 
-    # Check that Request was Successfull, if not print HTTPCode
+    # Check that Request was Successful, if not print HTTPCode
     if r.status_code != 200:
         print("Error:", r.status_code)
         
@@ -134,7 +155,11 @@ def get_latest_nano_price():
     global lastNANOPrice
 
     if lastPriceCheckHourNANO != hourString:                                  # If we haven't checked price this hour, check!
-        response = sessionConnection.get(NANO_API_URL)
+        try:
+            response = sessionConnectionCharmant.get(NANO_API_URL, timeout = 5)
+        except ConnectionError as ce:
+            print(ce)
+            
         response_json = response.json()
         lastPriceCheckHourNANO = hourString                                   # Update last time we checked for price
         lastNANOPrice = float(response_json[0]['price_usd'])    #Update Global value for price
@@ -148,7 +173,11 @@ def get_latest_btc_price():
     global lastBTCPrice
 
     if lastPriceCheckHourBTC != hourString:                                  # If we haven't checked price this hour, check!
-        response = sessionConnection.get(BITCOIN_API_URL)
+        try:
+            response = sessionConnectionCharmant.get(BITCOIN_API_URL, timeout = 5)
+        except ConnectionError as ce:
+            print(ce)
+            
         response_json = response.json()
         lastPriceCheckHourBTC = hourString                                # Update last time we checked for price
         lastBTCPrice = float(response_json[0]['price_usd'])     #Update Global value for price
@@ -166,10 +195,10 @@ def checkNANO():
     walletBalanceChange = currentNANOBalance - lastNANOBalance          # Get Change in Balance Since Last Checked
     walletBalanceChangeUSD = walletBalanceChange * priceNANO            # Convert that Change to USD
     
-    print("priceNANO: ", priceNANO)
-    print("currentNANOBalance: ", currentNANOBalance)
-    print("walletBalanceChange: ", walletBalanceChange)
-    print("walletBalanceChangeUSD: ", walletBalanceChangeUSD)
+    #print("priceNANO: ", priceNANO)
+    #print("currentNANOBalance: ", currentNANOBalance)
+    #print("walletBalanceChange: ", walletBalanceChange)
+    #print("walletBalanceChangeUSD: ", walletBalanceChangeUSD)
     
     if (walletBalanceChangeUSD >= feedCost):
         dispenseFood()
@@ -187,10 +216,10 @@ def checkBTC():
     walletBalanceChange = currentBTCBalance - lastBTCBalance          # Get Change in Balance Since Last Checked
     walletBalanceChangeUSD = walletBalanceChange * priceBTC           # Convert that Change to USD
     
-    print("priceBTC: ", priceBTC)
-    print("currentBTCBalance: ", currentBTCBalance)
-    print("walletBalanceChange: ", walletBalanceChange)
-    print("walletBalanceChangeUSD: ", walletBalanceChangeUSD)
+    #print("priceBTC: ", priceBTC)
+    #print("currentBTCBalance: ", currentBTCBalance)
+    #print("walletBalanceChange: ", walletBalanceChange)
+    #print("walletBalanceChangeUSD: ", walletBalanceChangeUSD)
     
     if (walletBalanceChangeUSD >= feedCost):
         dispenseFood()
@@ -221,7 +250,7 @@ def dispenseFood():
     #Write this time to File
     writeToFile("!!!!! Sending signal to dispense food")
     #SEND ANTENNA SIGNAL OUTSIDE
-    ser.write(str.encode('a'))
+    #ser.write(str.encode('a'))
     #print("sent:", str.encode('a'));
     
 def printBetter(String):
@@ -273,9 +302,9 @@ def main():
     global lastBTCBalance
     #Initialize these Globals for Comparison Later
     lastNANOBalance = getNanoBalance()
-    print("NANO Balance ", lastNANOBalance)
+    #print("NANO Balance ", lastNANOBalance)
     lastBTCBalance = getBitcoinBalance()
-    print("BTC Balance ", lastBTCBalance)
+    #print("BTC Balance ", lastBTCBalance)
     
     # TESTING ANTENNA
     while (0):
@@ -289,6 +318,5 @@ def main():
 
 if __name__ == '__main__':
     main()
-
 
 
