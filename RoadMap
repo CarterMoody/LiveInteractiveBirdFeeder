@@ -1,0 +1,3 @@
+# RoadMap of future things to be worked on.
+
+I am trying to understand webhooks and how to integrate them instead of querying an API multiple times per minute.
