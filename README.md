@@ -137,6 +137,8 @@ These people inspired me: tanglesheep IOTA (Live Interactive Sheep Feeding) and 
 - Tasker Export: https://taskernet.com/shares/?user=AS35m8m280j%2FFPGkbE9OvPhH4%2B%2FKd%2FFUPCMieeBd%2Batj8tVemNusHuhvDvo0rwACAjrS40KR&id=Task%3ATest
 - ConnectBot Key Based Authentication: http://michaelchelen.net/0f3e/android-connectbot-ssh-key-auth-howto/
 - RTMP YouTube LiveStream Guide for Dahua (Empire Tech) Cameras: https://www.youtube.com/watch?v=caGFCowzN74
+- Python Requests Tutorial: https://realpython.com/python-requests/
+- Python Requests Retries Info: https://www.peterbe.com/plog/best-practice-with-retries-with-requests
 
 
 
