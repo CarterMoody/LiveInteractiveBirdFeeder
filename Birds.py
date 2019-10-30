@@ -96,7 +96,42 @@ def updateDateTime():
     secondString = timePST.second
     
     return timePST
+
+def smartRequestBlockIO(query_url):
+    try:
+        r = sessionConnectionBlockIO.get(query_url, timeout = 10)
+    except ConnectionError as ce:
+        print(ce)
+        smartRequestBlockIO()
+    except requests.exceptions.Timeout as to:
+        print(to)
+        smartRequestBlockIO()
+    except Exception as e:
+        print(e)
+        smartRequestBlockIO()
+    # Check that request was Successful, if not print HTTPCode
+    if r.status_code != 200:
+        print("Error:", r.status_code)
+        
+    return r
     
+def smartRequestSnapy(query_url):
+    try:
+        r = sessionConnectionSnapyIO.get(query_url, headers = headersNANO, timeout = 10)
+    except ConnectionError as ce:
+        print(ce)
+        smartRequestSnapy()
+    except requests.exceptions.Timeout as to:
+        print(to)
+        smartRequestSnapy()
+    except Exception as e:
+        print(e)
+        smartRequestSnapy(query_url)
+    # Check that Request was Successful, if not print HTTPCode
+    if r.status_code != 200:
+        print("Error:", r.status_code)
+    
+    return r
 
 # Specific Function Queries Snapy.io for the balance of the address in global variable
 def getNanoBalance():
@@ -106,20 +141,8 @@ def getNanoBalance():
     #r = requests.get(query_url)
     jsonParameter = {'detailed':'true'}
     #r = sessionConnection.get(query_url, headers = headers, json = jsonParameter)
-    try:
-        r = sessionConnectionSnapyIO.get(query_url, headers = headersNANO, timeout = 10)
-    except ConnectionError as ce:
-        print(ce)
-        getNanoBalance()
-    except requests.exceptions.Timeout as to:
-        print(to)
-        getNanoBalance()
-    except Exception as e:
-        print(e)
-        getNanoBalance()
-    # Check that Request was Successful, if not print HTTPCode
-    if r.status_code != 200:
-        print("Error:", r.status_code)
+
+    r = smartRequestSnapy(query_url)
         
     response = r.json()
     #print("Printing Response: ")
@@ -135,21 +158,9 @@ def getBitcoinBalance():
     query_url = "https://block.io/api/v2/get_address_balance/?api_key=" + APIKeyBlockIO + "&addresses=" + WalletAddress_BTC_BlockChain
       
     #r = requests.get(query_url)
-    try:
-        r = sessionConnectionBlockIO.get(query_url, timeout = 10)
-    except ConnectionError as ce:
-        print(ce)
-        getBitcoinBalance()
-    except requests.exceptions.Timeout as to:
-        print(to)
-        getBitcoinBalance()
-    except Exception as e:
-        print(e)
-        getBitcoinBalance()
-    # Check that request was Successful, if not print HTTPCode
-    if r.status_code != 200:
-        print("Error:", r.status_code)
-        
+
+    r = smartRequestBlockIO(query_url)
+           
     response = r.json()
     #print("Printing Response: ")
     #print(response)
