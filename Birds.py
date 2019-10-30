@@ -45,7 +45,7 @@ APIKeySnapyIO = ""                  # API Key from Snapy.io to be read in from K
 APIKeyBlockIO = ""                  # API Key from Block.io to be read in from Keys.txt line#4 0 INDEXING
 #######################################
 ##### New SNAPY API info items ########
-headersNANO = {'x-api-key': APIKeySnapyIO}    # API Key from Snapy.io
+headersNANO = "" #{'x-api-key': APIKeySnapyIO}       # API Key from Snapy.io this is created in function readKeys
 SnapyWalletURL = "https://snapy.io/api/v1/wallets"   # Use this to generate a Wallet Got Seed: '2bb7bb6a04354c22903f9c6bf6f11c0ed29b1b9a14fd52fda89d549532f07f5b'
 SnapyAddressURL = "https://snapy.io/api/v1/address"  # Use this to generate addresses for that wallet
 SnapySendURL = "https://snapy.io/api/v1/send"        # Use this to send to an address
@@ -313,19 +313,23 @@ def loop():
     niceWait(1)
     
 def readKeys():
+    global APIKeyBlockIO
+    global APIKeySnapyIO
+    global headersNANO
     filepath = 'Keys.txt'
     with open(filepath) as fp:
         line = fp.readline()
         cnt = 1
         while line:
-            #print("Line {}: {}".format(cnt, line.strip()))
+            print("Line {}: {}".format(cnt, line.strip()))
             line = fp.readline()
             if cnt == 1:
-                APIKeySnapyIO = line
-                #print(APIKeySnapyIO)
+                APIKeySnapyIO = line.rstrip()
+                print(APIKeySnapyIO)
+                headersNANO = {'x-api-key': APIKeySnapyIO} 
             elif cnt == 3:
-                APIKeyBlockIO = line
-                #print(APIKeyBlockIO)
+                APIKeyBlockIO = line.rstrip()
+                print(APIKeyBlockIO)
             cnt += 1
             
     
@@ -336,7 +340,8 @@ def main():
     
     # Read in Keys from Keys.text
     readKeys()
-    
+    print(APIKeyBlockIO)
+    print(APIKeySnapyIO)
     #Initialize these Globals for Comparison Later
     lastNANOBalance = getNanoBalance()
     #print("NANO Balance ", lastNANOBalance)
