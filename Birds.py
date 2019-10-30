@@ -96,76 +96,57 @@ def updateDateTime():
     secondString = timePST.second
     
     return timePST
-
-def smartRequestBlockIO(query_url):
+    
+def smartRequest(type, query_url):
     try:
-        r = sessionConnectionBlockIO.get(query_url, timeout = 10)
+        if type == "BTC"
+            r = sessionConnectionBlockIO.get(query_url, timeout = 10)
+        elif type == "NANO"
+            r = sessionConnectionSnapyIO.get(query_url, headers = headersNANO, timeout = 10)
+            
     except ConnectionError as ce:
         print(ce)
-        smartRequestBlockIO()
+        smartRequest(type, query_url)
     except requests.exceptions.Timeout as to:
         print(to)
-        smartRequestBlockIO()
+        smartRequest(type, query_url)
     except Exception as e:
         print(e)
-        smartRequestBlockIO()
+        smartRequest(type, query_url)
     # Check that request was Successful, if not print HTTPCode
     if r.status_code != 200:
         print("Error:", r.status_code)
         
     return r
-    
-def smartRequestSnapy(query_url):
-    try:
-        r = sessionConnectionSnapyIO.get(query_url, headers = headersNANO, timeout = 10)
-    except ConnectionError as ce:
-        print(ce)
-        smartRequestSnapy()
-    except requests.exceptions.Timeout as to:
-        print(to)
-        smartRequestSnapy()
-    except Exception as e:
-        print(e)
-        smartRequestSnapy(query_url)
-    # Check that Request was Successful, if not print HTTPCode
-    if r.status_code != 200:
-        print("Error:", r.status_code)
-    
-    return r
+
 
 # Specific Function Queries Snapy.io for the balance of the address in global variable
 def getNanoBalance():
     # Use the below URL to querey for any specific address created through Snapy.io
     query_url = SnapyBalanceURL + WalletAddress_NANO_Snapyio
-      
-    #r = requests.get(query_url)
-    jsonParameter = {'detailed':'true'}
-    #r = sessionConnection.get(query_url, headers = headers, json = jsonParameter)
 
-    r = smartRequestSnapy(query_url)
-        
+    r = smartRequest("NANO", query_url)
+    
     response = r.json()
-    #print("Printing Response: ")
-    #print(response)
+    #print("Printing Response: {}".format(response))
+
     originalBalance = float(response['balance'])
     balanceAdjusted = originalBalance / 1000000
-    #print(balanceAdjusted)
+    #print("Printing Balance: {}".format(balanceAdjusted))
     return balanceAdjusted
     
 # Specific Function Queries Block.io for the balance of the address in global variable
 def getBitcoinBalance():
     # Use the below URL to querey for any specific address EVEN EXTERNAL from blockio service (not created by Blockio)
     query_url = "https://block.io/api/v2/get_address_balance/?api_key=" + APIKeyBlockIO + "&addresses=" + WalletAddress_BTC_BlockChain
-      
-    #r = requests.get(query_url)
 
-    r = smartRequestBlockIO(query_url)
+    r = smartRequest("BTC", query_url)
            
     response = r.json()
-    #print("Printing Response: ")
-    #print(response)
+    #print("Printing Response: {}".format(response))
+    
     originalBalance = float(response['data']['available_balance'])  #Extract Balance from JSON dictionary response
-    #print(originalBalance)
+    #print("Printing Balance: {}".format(originalBalance))
     return originalBalance
 
 
@@ -252,7 +233,7 @@ def checkBTC():
 
     lastBTCBalance = currentBTCBalance
         
-
+# Checks to see if lastFeedHour matches hourString
 def checkHourlyFeed():
     global lastFeedHour
     # Check to See if we have fed this hour
@@ -279,19 +260,22 @@ def dispenseFood():
     #ser.write(str.encode('a'))
     #print("sent:", str.encode('a'));
     
+# Generic wrapper to print which prints messages nicely with timestamp
 def printBetter(String):
     timePST = updateDateTime()
     print("|{}:{}:{}|{}".format(timePST.hour, timePST.minute, timePST.second, String), end='', flush=True)
     
+# Generic wrapper to f.write which logs messages nicely with timestamp
 def writeToFile(transactionString):
     timePST = updateDateTime()           # Grab Date and Time
     
     f = open("TransactionLog.txt", "a")  # Open File
-    f.write('\n')                    # New log line 
+    f.write('\n')                        # New log line 
     f.write("|{}:{}:{}|".format(timePST.hour, timePST.minute, timePST.second))      
     f.write(transactionString)           
     f.close()
 
+# Function which uses time.sleep but prints out a '.' (period) every second to visualize waiting
 def niceWait(seconds):
     timePST = updateDateTime()
     print("|{}:{}:{}|Waiting {} Seconds".format(timePST.hour, timePST.minute, timePST.second, seconds), end='', flush=True)
@@ -302,27 +286,32 @@ def niceWait(seconds):
         time.sleep(1)
     print("")
 
+# Main loop which will runs the whole program
 def loop():
-    #print("Checking NANO... ", end='', flush=True)
+    # Check to see if loop should even run during this time.
+    timePST = updateDateTime()
+    while hourString not in range(5, 19):
+        printBetter("Not within Time Range")
+        niceWait(60 * 60)
+        timePST = updateDateTime()
+        
     printBetter("Checking NANO... ")
     checkNANO()
     print("DONE")
     
     niceWait(1)    #Delay between requests... not sure if helps against ERROR 429 
     
-    #print("Checking BTC... ", end='', flush=True)
     printBetter("Checking BTC... ")
     checkBTC()
     print("DONE")
 
-    #print("Checking Hourly Feed... ", end='', flush=True)
     printBetter("Checking Hourly Feed... ")
     checkHourlyFeed()
     print("DONE")
-    
-    #time.sleep(10)
+
     niceWait(1)
     
+# This function reads API keys from the Keys.txt file in the same directory.
 def readKeys():
     global APIKeyBlockIO
     global APIKeySnapyIO
@@ -344,15 +333,14 @@ def readKeys():
             cnt += 1
             
     
-
 def main():
     global lastNANOBalance
     global lastBTCBalance
     
-    # Read in Keys from Keys.text
+    # Read in Keys from Keys.txt
     readKeys()
-    print(APIKeyBlockIO)
-    print(APIKeySnapyIO)
+    #print("Read this value for BlockIO key: ", APIKeyBlockIO)
+    #print("Read this value for SnapyIO key: ", APIKeySnapyIO)
     #Initialize these Globals for Comparison Later
     lastNANOBalance = getNanoBalance()
     #print("NANO Balance ", lastNANOBalance)
