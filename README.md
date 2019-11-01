@@ -85,6 +85,10 @@ There are Four basic elements to the RPi (transmitter) code: A polling engine wh
 
 There are Two basic elements to the Arduino (receiver) code: A polling engine which queries the serial for input from the attached XBEE module; and the code necessary to send a signal to the motor to spin. Again, I believe the comments are sufficient to understand.
 
+There is an additional file called Keys.txt where you will place your SnapyIO API key and BlockIO API key. This was created so that you do not accidentally upload any sensitive information like API keys!
+
+Another fun file, called: "forever" is a linux bash script which will run any python program forever. It starts the process via a Popen() command and then waits for it to quit before looping back and starting it again. This way, if ever the program crashes unexpectedly, it will restart automatically. The only reason Birds.py should crash is a connection error stemming from a request. I have built in some smart requesting functionality to handle most exceptions, however in the unlikely event that the program crashes, this will provide a good failsafe.
+
 
 # Tasker:
 Tasker is necessary to respond to Venmo receipts. It could, theoretically, be used to respond to all forms of payment so long as a notification is generated. It can even do the HTTP get requests if needed. Tasker is extremely powerful and can be tailored to suit any Android automation needs. There is an extremely friendly and responsive community on reddit called r/Tasker which is quick to provide help to anyone using the application. Anyways, here is the link to my finished task which monitors for a Venmo notification and checks to see if it contains payment of greater than $0.49 and afterwards launches ConnectBot which does the rest…
@@ -139,6 +143,7 @@ These people inspired me: tanglesheep IOTA (Live Interactive Sheep Feeding) and 
 - RTMP YouTube LiveStream Guide for Dahua (Empire Tech) Cameras: https://www.youtube.com/watch?v=caGFCowzN74
 - Python Requests Tutorial: https://realpython.com/python-requests/
 - Python Requests Retries Info: https://www.peterbe.com/plog/best-practice-with-retries-with-requests
+- Python Linux run forever script: https://www.alexkras.com/how-to-restart-python-script-after-exception-and-run-it-forever/
 
 
 
