@@ -116,6 +116,7 @@ def smartRequest(type, query_url):
     # Check that request was Successful, if not print HTTPCode
     if r.status_code != 200:
         print("Error:", r.status_code)
+        return smartRequest(type, query_url)
         
     return r
 
@@ -342,9 +343,13 @@ def main():
     #print("Read this value for BlockIO key: ", APIKeyBlockIO)
     #print("Read this value for SnapyIO key: ", APIKeySnapyIO)
     #Initialize these Globals for Comparison Later
+    printBetter("getting starting balance NANO... ")
     lastNANOBalance = getNanoBalance()
+    print("DONE")
     #print("NANO Balance ", lastNANOBalance)
+    printBetter("getting starting balance BTC... ")
     lastBTCBalance = getBitcoinBalance()
+    print("DONE")
     #print("BTC Balance ", lastBTCBalance)
     
     # TESTING ANTENNA
