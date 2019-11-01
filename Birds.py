@@ -99,20 +99,20 @@ def updateDateTime():
     
 def smartRequest(type, query_url):
     try:
-        if type == "BTC"
+        if type == "BTC":
             r = sessionConnectionBlockIO.get(query_url, timeout = 10)
-        elif type == "NANO"
+        elif type is "NANO":
             r = sessionConnectionSnapyIO.get(query_url, headers = headersNANO, timeout = 10)
             
     except ConnectionError as ce:
         print(ce)
-        smartRequest(type, query_url)
+        return smartRequest(type, query_url)
     except requests.exceptions.Timeout as to:
         print(to)
-        smartRequest(type, query_url)
+        return smartRequest(type, query_url)
     except Exception as e:
         print(e)
-        smartRequest(type, query_url)
+        return smartRequest(type, query_url)
     # Check that request was Successful, if not print HTTPCode
     if r.status_code != 200:
         print("Error:", r.status_code)
@@ -169,7 +169,7 @@ def get_latest_nano_price():
             
         response_json = response.json()
         lastPriceCheckHourNANO = hourString                                   # Update last time we checked for price
-        lastNANOPrice = float(response_json[0]['price_usd'])    #Update Global value for price
+        lastNANOPrice = float(response_json[0]['price_usd'])                  #Update Global value for price
         return lastNANOPrice
     else:
         return lastNANOPrice
@@ -198,7 +198,7 @@ def checkNANO():
     global lastNANOBalance
     
     priceNANO = get_latest_nano_price()                                 # Gets Latest Nano Price from Exchange
-    currentNANOBalance = getNanoBalance()                                 # Check Snapy for NANO balance
+    currentNANOBalance = getNanoBalance()                               # Check Snapy for NANO balance
     walletBalanceChange = currentNANOBalance - lastNANOBalance          # Get Change in Balance Since Last Checked
     walletBalanceChangeUSD = walletBalanceChange * priceNANO            # Convert that Change to USD
     
@@ -219,7 +219,7 @@ def checkBTC():
     global lastBTCBalance
     
     priceBTC = get_latest_btc_price()                                 # Gets Latest BTC Price from Exchange
-    currentBTCBalance = getBitcoinBalance()                              # Check Snapy for BTC balance
+    currentBTCBalance = getBitcoinBalance()                           # Check Snapy for BTC balance
     walletBalanceChange = currentBTCBalance - lastBTCBalance          # Get Change in Balance Since Last Checked
     walletBalanceChangeUSD = walletBalanceChange * priceBTC           # Convert that Change to USD
     
