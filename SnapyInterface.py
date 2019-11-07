@@ -30,6 +30,7 @@ NANO_API_URL = 'https://api.coinmarketcap.com/v1/ticker/raiblocks/'         # Th
 ##### API KEYS SUPER PRIVATE ##########
 APIKeySnapyIO = ""                  # API Key from Snapy.io to be read in from Keys.txt line#2 0 INDEXING
 APIKeyBlockIO = ""                  # API Key from Block.io to be read in from Keys.txt line#4 0 INDEXING
+SnapyPass = ""                      # Password used with Snapy.io to create address and use it
 #######################################
 ##### New SNAPY API info items ########
 headersNANO = "" #{'x-api-key': APIKeySnapyIO}       # API Key from Snapy.io this is created in function readKeys
@@ -68,10 +69,8 @@ sessionConnectionCharmant.mount('https://api.coinmarketcap.com', transportAdapte
 
 
 def generateWallet():
-    global SnapyWalletURL
-    global headers
-    
-    jsonParameter = {"password":"PASSWORD FOR YOUR WALLET MAKE IT LONG AND SECURE"}
+
+    jsonParameter = {"password":"SnapyPass"}
     r = requests.post(SnapyWalletURL, headers = headersNANO, json = jsonParameter)
 
     if r.status_code != 200:
@@ -83,10 +82,8 @@ def generateWallet():
     print(response)
     
 def generateAddress():
-    global headers
-    global SnapyAddressURL
     
-    jsonParameter = {"password":"PASSWORD FOR YOUR WALLET MAKE IT LONG AND SECURE"}
+    jsonParameter = {"password":"SnapyPass"}
     r = requests.post(SnapyAddressURL, headers = headersNANO)
     
     if r.status_code != 200:
@@ -98,7 +95,6 @@ def generateAddress():
     print(response)
     
 def sendNano():
-    global headers
     
     # Remember that amount is actually 1 million times NANO amount (1 xrb raiblock = 1,000,000 Nano)
     amountToSendNANO = 10
@@ -106,8 +102,8 @@ def sendNano():
     jsonParameter = {
                     "to":"nano_36wcd1s3ekway8s5ays1fj9ewgtxyyot1dkr8wo6f3k5mnqnigj8uc698zji",
                      "from":"xrb_3x9azks1d118ap7wmq1kpnuc7mb5i6axiaqd9k6uyd9i6sqcuipr5p5wdpx6",
-                     "amount":"10000000",
-                     "password":"TestPassword"
+                     "amount":"1",
+                     "password":SnapyPass
                     }
                     
     r = requests.post(SnapySendURL, headers = headersNANO, json = jsonParameter)
@@ -179,7 +175,6 @@ def get_latest_nano_price():
 # It does this by fetching Wallet Balance, and Current Exchange Price
 def checkNANO():
     global lastNANOBalance
-    global feedCost
     
     priceNANO = get_latest_nano_price()                                 # Gets Latest Nano Price from Exchange
     currentNANOBalance = getNanoBalance()                                 # Check Snapy for NANO balance
@@ -201,6 +196,7 @@ def readKeys():
     global APIKeyBlockIO
     global APIKeySnapyIO
     global headersNANO
+    global SnapyPass
     filepath = 'Keys.txt'
     with open(filepath) as fp:
         line = fp.readline()
@@ -215,6 +211,10 @@ def readKeys():
             elif cnt == 3:
                 APIKeyBlockIO = line.rstrip()
                 print(APIKeyBlockIO)
+            elif cnt == 5:
+                SnapyPass = line.rstrip()
+                print(SnapyPass)
+                
             cnt += 1
              
     
