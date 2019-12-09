@@ -16,6 +16,7 @@ The purpose of this project is to expose more people to wildlife/animals and pro
 
 # Necessary Items: 
 Total Cost: $150-$400 Depending on Camera Choice
+
 These specific items were used and different configurations/versions are possible
 
 	- RPi 4 (could run on any RPi)
