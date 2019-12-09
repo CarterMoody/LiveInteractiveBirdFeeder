@@ -1,7 +1,8 @@
 # LiveInteractiveBirdFeeder DIY Guide Walkthrough
 
 # Finished Product: https://www.youtube.com/channel/UCErXmjslZq1scwuezZL9UCQ
-Link to my youtube channel. Click on the LiveStream to view the finished product.
+Link to my youtube channel. Click on the LiveStream to view the finished product. 
+
 Link to Bird Watching HQ: https://www.youtube.com/channel/UCuL60_Ko4m9xCaa4QDNgJrw
 - Bird Watching HQ may obtain and host my stream in the future in an effort to expand both our audiences.
 
