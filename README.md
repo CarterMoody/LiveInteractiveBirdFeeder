@@ -2,6 +2,8 @@
 
 # Finished Product: https://www.youtube.com/channel/UCErXmjslZq1scwuezZL9UCQ
 Link to my youtube channel. Click on the LiveStream to view the finished product.
+Link to Bird Watching HQ: https://www.youtube.com/channel/UCuL60_Ko4m9xCaa4QDNgJrw
+- Bird Watching HQ may obtain and host my stream in the future in an effort to expand both our audiences.
 
 
 # Preface:
@@ -12,7 +14,7 @@ This guide includes detailed instructions to create your own automatic bird feed
 The purpose of this project is to expose more people to wildlife/animals and provide food for them. The more people that create something like this, the more people become aware of the natural beauty around us. All made possible by RPi, Arduino, and of course the Blockchain.
 
 # Necessary Items: 
-Total Cost: $100,000,000,00000,00000000,000000000,00000000000.99
+Total Cost: $150-$400 Depending on Camera Choice
 These specific items were used and different configurations/versions are possible
 
 	- RPi 4 (could run on any RPi)
@@ -81,13 +83,13 @@ These are essentially the same tutorial except each one connects a computer to e
 
 
 # Code:
-There are Four basic elements to the RPi (transmitter) code: A polling engine which queries the blockchain for wallet balance change; A timer which feeds regularly, Code to send a feed signal to the Arduino (receiver); and a separate program to only send feed signal once (to be triggered by Tasker or for testing purposes). The comments within the code are, I believe, sufficient to explain what is going on. Remember to replace instances of "Your API Key Here" and "Enter Password" With your unique values!
+There are Four basic elements to the RPi (transmitter) code: A polling engine which queries the blockchain for wallet balance change; A timer which feeds regularly, Code to send a feed signal to the Arduino (receiver); and a separate program to only send feed signal once (to be triggered by Tasker or for testing purposes). The comments within the code are, I believe, sufficient to explain what is going on. Remember to edit the Keys.txt file to contain your API keys for querying!
 
 There are Two basic elements to the Arduino (receiver) code: A polling engine which queries the serial for input from the attached XBEE module; and the code necessary to send a signal to the motor to spin. Again, I believe the comments are sufficient to understand.
 
 There is an additional file called Keys.txt where you will place your SnapyIO API key and BlockIO API key. This was created so that you do not accidentally upload any sensitive information like API keys!
 
-Another fun file, called: "forever" is a linux bash script which will run any python program forever. It starts the process via a Popen() command and then waits for it to quit before looping back and starting it again. This way, if ever the program crashes unexpectedly, it will restart automatically. The only reason Birds.py should crash is a connection error stemming from a request. I have built in some smart requesting functionality to handle most exceptions, however in the unlikely event that the program crashes, this will provide a good failsafe.
+Another fun file, called: "forever" is a linux bash script which will run any python program forever. It starts the process via a Popen() command and then waits for it to quit before looping back and starting it again. This way, if ever the program crashes unexpectedly, it will restart automatically. The only reason Birds.py should crash is a connection error stemming from a request. I have built in some smart requesting functionality to handle most exceptions, however in the unlikely event that the program crashes, this will provide a good failsafe. The uptime of my program running 24/7 is now 100% since November 2019.
 
 
 # Tasker:
@@ -96,7 +98,7 @@ https://taskernet.com/shares/?user=AS35m8m280j%2FFPGkbE9OvPhH4%2B%2FKd%2FFUPCMie
 
 
 # ConnectBot:
-ConnectBot is used to SSH into the RPi and start the program FeedOnce.py which will send one signal outside to dispense food. There is a guide online which covers how to set this up.
+ConnectBot is used to SSH into the RPi and start the program FeedOnce.py which will send one signal outside to dispense food. There is a guide online which covers how to set this up. The android device running tasked must be on the same network (and probably band: 2.4;5.1) as the RPi.
 1. Install the free SSH client ConnectBot.
 2. Key-based authentication with ConnectBot is required. A good tutorial: http://michaelchelen.net/0f3e/android-connectbot-ssh-key-auth-howto/
 3. When you have set up the connection, long-press the connection in ConnectBot’s host list and select Edit host. Change the name to some nickname, e.g., myconnection.
@@ -114,8 +116,8 @@ There are many print statements left in the code. Uncomment them to see results 
 
 
 # Live Stream:
-The camera I have chosen (redacted, banned from US distribution) is capable of RTMP (RealTimeMessagingProtocol) transmission which allows the camera itself to bypass the encoder (or act as one idk) and send the frames/audio it captures directly to an RTMP receiver (youtube livestream). Thanks to this technology, after launching your IP Camera configuration settings (by connecting via ip address to your network connected camera) you may specify an RTMP address and pre-shared key to connect the IP Cam to the Live Stream. I used this tutorial to understand how to do this with my specific camera: https://www.youtube.com/watch?v=caGFCowzN74
-Some things to note are that Youtube digests H264 Video format and AAC Audio format. Also play around with bitrate settings until youtube stops complaining. Your ISP may throttle a high bitrate. I have 100 up and down, which is sustainable for 1080p60fps
+The camera I have chosen, the (redacted, banned from US distribution), is capable of RTMP (RealTimeMessagingProtocol) transmission which allows the camera itself to bypass the encoder (or act as one idk) and send the frames/audio it captures directly to an RTMP receiver (youtube livestream). Thanks to this technology, after launching your IP Camera configuration settings (by connecting via ip address to your network connected camera) you may specify an RTMP address and pre-shared key to connect the IP Cam to the Live Stream. I used this tutorial to understand how to do this with my specific camera: https://www.youtube.com/watch?v=caGFCowzN74
+Some things to note are that Youtube digests H264 Video format and AAC Audio format. Also play around with bitrate settings until youtube stops complaining. Your ISP may (Almost Guaranteed!) throttle a high bitrate. I have 100 up and down, which is sustainable for 1080p60fps
 
 My camera video settings are as follows:
 
@@ -140,7 +142,7 @@ These people inspired me: tanglesheep IOTA (Live Interactive Sheep Feeding) and 
 - Circuit Digest XBEE Arduino: https://circuitdigest.com/microcontroller-projects/arduino-xbee-module-interfacing-tutorial
 - Tasker Export: https://taskernet.com/shares/?user=AS35m8m280j%2FFPGkbE9OvPhH4%2B%2FKd%2FFUPCMieeBd%2Batj8tVemNusHuhvDvo0rwACAjrS40KR&id=Task%3ATest
 - ConnectBot Key Based Authentication: http://michaelchelen.net/0f3e/android-connectbot-ssh-key-auth-howto/
-- RTMP YouTube LiveStream Guide for Dahua (Empire Tech) Cameras: https://www.youtube.com/watch?v=caGFCowzN74
+- RTMP YouTube LiveStream Guide for Dahua (America: Empire Tech) Cameras: https://www.youtube.com/watch?v=caGFCowzN74
 - Python Requests Tutorial: https://realpython.com/python-requests/
 - Python Requests Retries Info: https://www.peterbe.com/plog/best-practice-with-retries-with-requests
 - Python Linux run forever script: https://www.alexkras.com/how-to-restart-python-script-after-exception-and-run-it-forever/
