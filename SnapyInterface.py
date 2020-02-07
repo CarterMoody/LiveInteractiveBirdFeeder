@@ -96,7 +96,7 @@ def generateAddress():
     
 def sendNano():
     
-    # Remember that amount is actually 1 million times NANO amount (1 xrb raiblock = 1,000,000 Nano)
+    # Remember that amount is actually 1 million times NANO amount (1,000,000 amount = 1 Nano)
     amountToSendNANO = 10
     amountToSendNANO = amountToSendNANO * 1000000
     jsonParameter = {
