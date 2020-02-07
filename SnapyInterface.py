@@ -34,7 +34,7 @@ SnapyPass = ""                      # Password used with Snapy.io to create addr
 #######################################
 ##### New SNAPY API info items ########
 headersNANO = "" #{'x-api-key': APIKeySnapyIO}       # API Key from Snapy.io this is created in function readKeys
-SnapyWalletURL = "https://snapy.io/api/v1/wallets"   # Use this to generate a Wallet Got Seed: '2bb7bb6a04354c22903f9c6bf6f11c0ed29b1b9a14fd52fda89d549532f07f5b'
+SnapyWalletURL = "https://snapy.io/api/v1/wallets"   # Use this to generate a Wallet Got Seed: 'PRIVATE DO NOT SHARE'
 SnapyAddressURL = "https://snapy.io/api/v1/address"  # Use this to generate addresses for that wallet
 SnapySendURL = "https://snapy.io/api/v1/send"        # Use this to send to an address
 SnapyBalanceURL = "http://snapy.io/api/v1/balance/"  # Use this to check balance of all wallets. Concatenate an exact address to return one balance
