@@ -13,17 +13,17 @@ from datetime import datetime, timezone             # Current Time Items
 native_dt = datetime.now()                          # Reset Time to Local
 
 ##### XBEE Stuff Below ################
-#import serial
-#from serial import Serial
-#import RPi.GPIO as GPIO
-#GPIO.setmode(GPIO.BCM)
-#GPIO.setwarnings(False)
+import serial
+from serial import Serial
+import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 #Set Serial to your USB serial device (XBEE)
-#ser = serial.Serial('/dev/ttyUSB0', 9600,timeout=.5)
+ser = serial.Serial('/dev/ttyUSB0', 9600,timeout=.5)
 ##### END XBEE setup ##################
 #######################################
 ##### GLOBAL OTHER VARIABLES ##########
-feedCost = .05              # IN USD    controls minimum donation required to dispense food
+feedCost = .25              # IN USD    controls minimum donation required to dispense food
 lastNANOBalance = 0         # IN NANO   Tracks NANO wallet Balance from last cycle request
 lastBTCBalance = 0          # IN BTC    Tracks BTC wallet Balance from last cycle request
 lastNANOPrice = 0           # IN USD    Tracks NANO price from exchange... updated daily
@@ -37,15 +37,18 @@ WalletAddress_NANO_Snapyio = "xrb_3x9azks1d118ap7wmq1kpnuc7mb5i6axiaqd9k6uyd9i6s
 #######################################
 ##### Legacy API Addresses ############
 API_URL = "http://charmantadvisory.com:5000/apiblock/%s/%s"                             
-BITCOIN_API_URL = 'https://api.coinmarketcap.com/v1/ticker/bitcoin/'        # These are still used to track current market value            
-NANO_API_URL = 'https://api.coinmarketcap.com/v1/ticker/raiblocks/'         # These are still used to track current market value 
+BITCOIN_API_URL = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'        # These are still used to track current market value            
+NANO_API_URL = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'         # These are still used to track current market value 
 #######################################
 ##### API KEYS SUPER PRIVATE ##########
 APIKeySnapyIO = ""                  # API Key from Snapy.io to be read in from Keys.txt line#2 0 INDEXING
 APIKeyBlockIO = ""                  # API Key from Block.io to be read in from Keys.txt line#4 0 INDEXING
+APIKeyProCoinMarketCap = ""                  # API Key from pro.CoinMarketCap to be read in from Keys.txt line#4 0 INDEXING
 #######################################
 ##### New SNAPY API info items ########
 headersNANO = "" #{'x-api-key': APIKeySnapyIO}       # API Key from Snapy.io this is created in function readKeys
+headersPCMC = "" #{'Accepts': 'application/json',
+                 #'X-CMC_PRO_API_KEY': APIKeyProCoinMarketCap}      # API Key from ProCoinMarketCap this is created in function readKeys
 SnapyWalletURL = "https://snapy.io/api/v1/wallets"   # Use this to generate a Wallet Got Seed: '2bb7bb6a04354c22903f9c6bf6f11c0ed29b1b9a14fd52fda89d549532f07f5b'
 SnapyAddressURL = "https://snapy.io/api/v1/address"  # Use this to generate addresses for that wallet
 SnapySendURL = "https://snapy.io/api/v1/send"        # Use this to send to an address
@@ -74,7 +77,7 @@ transportAdapterBlockIO = HTTPAdapter(max_retries=retry)    # Setup Max Retries 
 transportAdapterCharmant = HTTPAdapter(max_retries=retry)
 sessionConnectionSnapyIO.mount(SnapyBalanceURL, transportAdapterSnapyIO)
 sessionConnectionBlockIO.mount('https://block.io/', transportAdapterBlockIO)    # Use Transport Adapter for all endpoints that start with this URL
-sessionConnectionCharmant.mount('https://api.coinmarketcap.com', transportAdapterCharmant)
+sessionConnectionCharmant.mount('https://pro-api.coinmarketcap.com', transportAdapterCharmant)
 #######################################
 #######################################
 #######################################
@@ -103,6 +106,19 @@ def smartRequest(type, query_url):
             r = sessionConnectionBlockIO.get(query_url, timeout = 10)
         elif type is "NANO":
             r = sessionConnectionSnapyIO.get(query_url, headers = headersNANO, timeout = 10)
+        elif type is "TICKERBTC":
+            parameters = {'id':'1'}
+            r = sessionConnectionCharmant.get(query_url, headers = headersPCMC, params = parameters, timeout = 10)
+        elif type is "TICKERNANO":
+            parameters = {'id':'1567'}
+            print("checking nano price from coinmarketcap")
+            #print("query_url: ")
+            #print(query_url)
+            #print("headers: ")
+            #print(headersPCMC)
+            #print("params: ")
+            #print(parameters)
+            r = sessionConnectionCharmant.get(query_url, headers = headersPCMC, params = parameters, timeout = 10)
             
     except ConnectionError as ce:
         print(ce)
@@ -116,6 +132,8 @@ def smartRequest(type, query_url):
     # Check that request was Successful, if not print HTTPCode
     if r.status_code != 200:
         print("Error:", r.status_code)
+        # Wait at LEAST 1 second
+        niceWait(1)
         return smartRequest(type, query_url)
         
     return r
@@ -139,9 +157,12 @@ def getNanoBalance():
 # Specific Function Queries Block.io for the balance of the address in global variable
 def getBitcoinBalance():
     # Use the below URL to querey for any specific address EVEN EXTERNAL from blockio service (not created by Blockio)
-    query_url = "https://block.io/api/v2/get_address_balance/?api_key=" + APIKeyBlockIO + "&addresses=" + WalletAddress_BTC_BlockChain
+    #query_url = "https://block.io/api/v2/get_address_balance/?api_key=" + APIKeyBlockIO + "&addresses=" + WalletAddress_BTC_BlockChain
+    query_url = "https://block.io/api/v2/get_address_balance/?api_key=" + APIKeyBlockIO + "&addresses=" + WalletAddress_BTC_Blockio
 
+    printBetter("Getting Bitcoin Balance")
     r = smartRequest("BTC", query_url)
+    printBetter("Finished getting Bitcoin Balance")
            
     response = r.json()
     #print("Printing Response: {}".format(response))
@@ -161,18 +182,21 @@ def printTime():
 def get_latest_nano_price():
     global lastPriceCheckHourNANO
     global lastNANOPrice
+    #print("Getting Latest NanoPrice")
 
     if lastPriceCheckHourNANO != hourString:                                  # If we haven't checked price this hour, check!
-        try:
-            response = sessionConnectionCharmant.get(NANO_API_URL, timeout = 5)
-        except ConnectionError as ce:
-            print(ce)
+        #print("Havent grabbed price this hour")
+        response = smartRequest("TICKERNANO", NANO_API_URL)
             
         response_json = response.json()
         lastPriceCheckHourNANO = hourString                                   # Update last time we checked for price
-        lastNANOPrice = float(response_json[0]['price_usd'])                  #Update Global value for price
+        lastNANOPrice = float(response_json['data']['1567']['quote']['USD']['price'])
+        #print(lastNANOPrice)
+        #lastNANOPrice = float(response_json[0]['price_usd'])                  #Update Global value for price
+        #print("Finished Grabbing Price, Returning")
         return lastNANOPrice
     else:
+        #print("Return price from this hour already")
         return lastNANOPrice
 
 # Gets Latest BTC Price from Exchange
@@ -181,14 +205,17 @@ def get_latest_btc_price():
     global lastBTCPrice
 
     if lastPriceCheckHourBTC != hourString:                                  # If we haven't checked price this hour, check!
-        try:
-            response = sessionConnectionCharmant.get(BITCOIN_API_URL, timeout = 5)
-        except ConnectionError as ce:
-            print(ce)
-            
+        #try:
+        #    response = sessionConnectionCharmant.get(BITCOIN_API_URL, timeout = 5)
+        #except ConnectionError as ce:
+        #    print(ce)
+        printBetter("Getting latest BTC Price")
+        response = smartRequest("TICKERBTC", BITCOIN_API_URL)
+        printBetter("Finished getting latest BTC Price")
+         
         response_json = response.json()
         lastPriceCheckHourBTC = hourString                                # Update last time we checked for price
-        lastBTCPrice = float(response_json[0]['price_usd'])     #Update Global value for price
+        lastBTCPrice = float(response_json['data']['1']['quote']['USD']['price'])     #Update Global value for price
         return lastBTCPrice
     else:
         return lastBTCPrice
@@ -258,7 +285,7 @@ def dispenseFood():
     #Write this time to File
     writeToFile("!!!!! Sending signal to dispense food")
     #SEND ANTENNA SIGNAL OUTSIDE
-    #ser.write(str.encode('a'))
+    ser.write(str.encode('a'))
     #print("sent:", str.encode('a'));
     
 # Generic wrapper to print which prints messages nicely with timestamp
@@ -317,6 +344,7 @@ def readKeys():
     global APIKeyBlockIO
     global APIKeySnapyIO
     global headersNANO
+    global headersPCMC
     filepath = 'Keys.txt'
     with open(filepath) as fp:
         line = fp.readline()
@@ -328,15 +356,25 @@ def readKeys():
                 APIKeySnapyIO = line.rstrip()
                 print(APIKeySnapyIO)
                 headersNANO = {'x-api-key': APIKeySnapyIO} 
-            elif cnt == 3:
+            if cnt == 3:
                 APIKeyBlockIO = line.rstrip()
                 print(APIKeyBlockIO)
+            elif cnt == 5:
+                APIKeyProCoinMarketCap = line.rstrip()
+                print(APIKeyProCoinMarketCap)
+                headersPCMC = {'Accepts': 'application/json', 'X-CMC_PRO_API_KEY': APIKeyProCoinMarketCap}
             cnt += 1
             
     
 def main():
     global lastNANOBalance
     global lastBTCBalance
+      
+    
+    # TESTING ANTENNA
+    while (0):
+        dispenseFood()
+        time.sleep(3)
     
     # Read in Keys from Keys.txt
     readKeys()
@@ -352,10 +390,7 @@ def main():
     print("DONE")
     #print("BTC Balance ", lastBTCBalance)
     
-    # TESTING ANTENNA
-    while (0):
-        dispenseFood()
-        time.sleep(5)
+
     
     # Enter Loop, Checking Balance and Change Every 3 Seconds
     while (1):
@@ -364,5 +399,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
